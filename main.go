@@ -1,9 +1,13 @@
 package main
 
 import (
-	"fmt"
+	"log"
+	"net/http"
+
+	_ "github.com/fooksupachai/golang_restful_api/router"
 )
 
 func main() {
-	fmt.Println("Hello World")
+	log.Print("Rest server is listening on port 8080")
+	log.Fatal(http.ListenAndServe(":8080", nil))
 }
