@@ -3,6 +3,8 @@ package controller
 import (
 	"encoding/json"
 	"net/http"
+
+	database "github.com/fooksupachai/golang_restful_api/database"
 )
 
 // Account for describe infomation
@@ -16,6 +18,8 @@ type Account struct {
 // GetUsers to Get all user in database
 func GetUsers(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Content-Type", "application/json")
+
+	database.InitialDB()
 
 	var account []Account
 
