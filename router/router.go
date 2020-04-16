@@ -8,4 +8,5 @@ import (
 
 func init() {
 	http.HandleFunc("/users", controller.GetUsers)
+	http.HandleFunc("/user", controller.CreateUser)
 }

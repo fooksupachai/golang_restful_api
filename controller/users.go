@@ -38,3 +38,18 @@ func GetUsers(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(resp)
 
 }
+
+// CreateUser to generate user account
+func CreateUser(w http.ResponseWriter, r *http.Request) {
+	w.Header().Add("Content-Type", "application/json")
+
+	database.InsertData()
+
+	resp := struct {
+		Status int `json:"status"`
+	}{
+		Status: http.StatusAccepted,
+	}
+
+	json.NewEncoder(w).Encode(resp)
+}
