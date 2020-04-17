@@ -24,10 +24,10 @@ func getEnvVariable(key string) string {
 // InitialDB for connected to databases
 func InitialDB() *sql.DB {
 
-	password := getEnvVariable("PASSWORD_DATABASE")
-	database := getEnvVariable("DATABASE_NAME")
+	password := getEnvVariable(`PASSWORD_DATABASE`)
+	database := getEnvVariable(`DATABASE_NAME`)
 
-	db, err := sql.Open("mysql", "root:"+password+database)
+	db, err := sql.Open(`mysql`, `root:`+password+database)
 
 	if err != nil {
 		panic(err.Error())
@@ -41,11 +41,26 @@ func InsertData() {
 
 	db := InitialDB()
 
-	insert, err := db.Query("INSERT INTO Accounts VALUES ( 'Supachai', 'Keenthing', 23, '171/674 ...' )")
+	insert, err := db.Query(`INSERT INTO Accounts VALUES ( 'Supachai', 'Keenthing', 23, '171/674 ...' )`)
 
 	if err != nil {
 		panic(err.Error())
 	}
 	// be careful deferring Queries if you are using transactions
 	defer insert.Close()
+}
+
+// GetAllAccount user account from database accounts table
+func GetAllAccount() *sql.Rows {
+
+	db := InitialDB()
+
+	result, err := db.Query(`SELECT * FROM book_store.Accounts`)
+
+	if err != nil {
+		panic(err.Error())
+	}
+
+	return result
+
 }

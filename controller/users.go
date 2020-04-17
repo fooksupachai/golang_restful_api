@@ -17,22 +17,34 @@ type Account struct {
 
 // GetUsers to Get all user in database
 func GetUsers(w http.ResponseWriter, r *http.Request) {
+
 	w.Header().Add("Content-Type", "application/json")
 
-	database.InitialDB()
+	result := database.GetAllAccount()
 
-	var account []Account
+	var accounts []Account
 
-	accountList := Account{"Fook", "Fik", 23, "Detail"}
+	for result.Next() {
 
-	for i := 0; i < 10; i++ {
-		account = append(account, accountList)
+		var account Account
+		err := result.Scan(
+			&account.FirstName,
+			&account.LastName,
+			&account.Age,
+			&account.Address,
+		)
+
+		if err != nil {
+			panic(err.Error())
+		}
+
+		accounts = append(accounts, account)
 	}
 
 	resp := struct {
 		Account []Account `json:"account"`
 	}{
-		Account: account,
+		Account: accounts,
 	}
 
 	json.NewEncoder(w).Encode(resp)
@@ -41,6 +53,7 @@ func GetUsers(w http.ResponseWriter, r *http.Request) {
 
 // CreateUser to generate user account
 func CreateUser(w http.ResponseWriter, r *http.Request) {
+
 	w.Header().Add("Content-Type", "application/json")
 
 	database.InsertData()
