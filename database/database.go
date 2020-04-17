@@ -4,11 +4,30 @@ import (
 	"database/sql"
 
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/joho/godotenv"
+
+	"log"
+	"os"
 )
+
+func getEnvVariable(key string) string {
+	// load .env file
+	err := godotenv.Load(".env")
+
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
+	return os.Getenv(key)
+}
 
 // InitialDB for connected to databases
 func InitialDB() {
-	db, err := sql.Open("mysql", "root:fyhwek+1t(aE@/book_store")
+
+	password := getEnvVariable("PASSWORD_DATABASE")
+	database := getEnvVariable("DATABASE_NAME")
+
+	db, err := sql.Open("mysql", "root:"+password+database)
 
 	if err != nil {
 		panic(err.Error())
