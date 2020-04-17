@@ -2,6 +2,9 @@ package database
 
 import (
 	"database/sql"
+	"encoding/json"
+	"fmt"
+	"io"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/joho/godotenv"
@@ -9,6 +12,14 @@ import (
 	"log"
 	"os"
 )
+
+// Account for describe infomation
+type Account struct {
+	FirstName string `json:"firstname"`
+	LastName  string `json:"lastname"`
+	Age       int    `json:"age"`
+	Address   string `json:"address"`
+}
 
 func getEnvVariable(key string) string {
 	// load .env file
@@ -37,15 +48,30 @@ func InitialDB() *sql.DB {
 }
 
 // InsertData to database
-func InsertData() {
+func InsertData(body io.ReadCloser) {
+
+	var account Account
+
+	err := json.NewDecoder(body).Decode(&account)
+
+	if err != nil {
+		fmt.Println("error decode")
+	}
 
 	db := InitialDB()
 
-	insert, err := db.Query(`INSERT INTO Accounts VALUES ( 'Supachai', 'Keenthing', 23, '171/674 ...' )`)
+	insert, err := db.Prepare(`INSERT INTO Accounts VALUES (?, ?, ?, ?)`)
+
+	_, err = insert.Exec(
+		account.FirstName,
+		account.LastName,
+		account.Age,
+		account.Address)
 
 	if err != nil {
 		panic(err.Error())
 	}
+
 	// be careful deferring Queries if you are using transactions
 	defer insert.Close()
 }
