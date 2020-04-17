@@ -22,7 +22,7 @@ func getEnvVariable(key string) string {
 }
 
 // InitialDB for connected to databases
-func InitialDB() {
+func InitialDB() *sql.DB {
 
 	password := getEnvVariable("PASSWORD_DATABASE")
 	database := getEnvVariable("DATABASE_NAME")
@@ -33,18 +33,13 @@ func InitialDB() {
 		panic(err.Error())
 	}
 
-	defer db.Close()
+	return db
 }
 
 // InsertData to database
 func InsertData() {
-	db, err := sql.Open("mysql", "root:fyhwek+1t(aE@/book_store")
 
-	if err != nil {
-		panic(err.Error())
-	}
-
-	defer db.Close()
+	db := InitialDB()
 
 	insert, err := db.Query("INSERT INTO Accounts VALUES ( 'Supachai', 'Keenthing', 23, '171/674 ...' )")
 
