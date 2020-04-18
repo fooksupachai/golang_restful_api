@@ -2,11 +2,10 @@ package controller
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
-	"strings"
 
 	database "github.com/fooksupachai/golang_restful_api/database"
+	"github.com/gorilla/mux"
 )
 
 // Account for describe infomation
@@ -89,24 +88,9 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	param := r.URL.Path[6:]
+	param := mux.Vars(r)
 
-	idx := strings.Index(param, "/")
-	if idx == -1 {
-
-		// url /user/:id we're all set
-		fmt.Println(param)
-	}
-
-	static := param[idx+1:]
-
-	// found slash but no more to the URL
-	if len(static) == 0 {
-		http.Redirect(w, r, r.URL.Path[:len(r.URL.Path)-1], http.StatusMovedPermanently)
-		return
-	}
-
-	database.UpdataUserData(r.Body, param)
+	database.UpdataUserData(r.Body, param["firstname"])
 
 	resp := struct {
 		Status int `json:"status"`
