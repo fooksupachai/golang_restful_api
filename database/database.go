@@ -119,3 +119,21 @@ func UpdataUserData(body io.ReadCloser, firstname string) {
 
 	defer update.Close()
 }
+
+// DeleteUserData from database
+func DeleteUserData(firstname string) {
+
+	db := InitialDB()
+
+	delete, err := db.Prepare(`DELETE FROM Accounts WHERE firstname = ?`)
+
+	_, err = delete.Exec(
+		firstname,
+	)
+
+	if err != nil {
+		panic(err.Error())
+	}
+
+	defer delete.Close()
+}

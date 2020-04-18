@@ -100,3 +100,26 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 
 	json.NewEncoder(w).Encode(resp)
 }
+
+// DeleteUser to delete user account
+func DeleteUser(w http.ResponseWriter, r *http.Request) {
+
+	w.Header().Add("Content-Type", "application/json")
+
+	if r.Method != http.MethodDelete {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		return
+	}
+
+	param := mux.Vars(r)
+
+	database.DeleteUserData(param["firstname"])
+
+	resp := struct {
+		Status int `json:"status"`
+	}{
+		Status: http.StatusAccepted,
+	}
+
+	json.NewEncoder(w).Encode(resp)
+}
