@@ -3,7 +3,6 @@ package database
 import (
 	"database/sql"
 	"encoding/json"
-	"fmt"
 	"io"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -47,6 +46,21 @@ func InitialDB() *sql.DB {
 	return db
 }
 
+// GetAllAccount user account from database accounts table
+func GetAllAccount() *sql.Rows {
+
+	db := InitialDB()
+
+	result, err := db.Query(`SELECT * FROM book_store.Accounts`)
+
+	if err != nil {
+		panic(err.Error())
+	}
+
+	return result
+
+}
+
 // InsertData to database
 func InsertData(body io.ReadCloser) {
 
@@ -55,7 +69,7 @@ func InsertData(body io.ReadCloser) {
 	err := json.NewDecoder(body).Decode(&account)
 
 	if err != nil {
-		fmt.Println("error decode")
+		panic(err.Error())
 	}
 
 	db := InitialDB()
@@ -76,17 +90,32 @@ func InsertData(body io.ReadCloser) {
 	defer insert.Close()
 }
 
-// GetAllAccount user account from database accounts table
-func GetAllAccount() *sql.Rows {
+// UpdataUserData into database
+func UpdataUserData(body io.ReadCloser, firstname string) {
 
-	db := InitialDB()
+	var account Account
 
-	result, err := db.Query(`SELECT * FROM book_store.Accounts`)
+	err := json.NewDecoder(body).Decode(&account)
 
 	if err != nil {
 		panic(err.Error())
 	}
 
-	return result
+	db := InitialDB()
 
+	update, err := db.Prepare(`UPDATE Accounts SET firstname = ?, lastname = ?, age = ?, address = ? WHERE firstname = ?`)
+
+	_, err = update.Exec(
+		account.FirstName,
+		account.LastName,
+		account.Age,
+		account.Address,
+		firstname,
+	)
+
+	if err != nil {
+		panic(err.Error())
+	}
+
+	defer update.Close()
 }
