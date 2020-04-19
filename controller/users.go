@@ -159,13 +159,28 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-	resp := struct {
-		Account []Account `json:"account"`
-		Status  int       `json:"status"`
-	}{
-		Account: accounts,
-		Status:  http.StatusAccepted,
-	}
+	if accounts != nil {
 
-	json.NewEncoder(w).Encode(resp)
+		resp := struct {
+			Account []Account `json:"account"`
+			Status  int       `json:"status"`
+		}{
+			Account: accounts,
+			Status:  http.StatusAccepted,
+		}
+
+		json.NewEncoder(w).Encode(resp)
+
+	} else {
+
+		resp := struct {
+			Account string `json:"account"`
+			Status  int    `json:"status"`
+		}{
+			Account: "Not found any account",
+			Status:  http.StatusAccepted,
+		}
+
+		json.NewEncoder(w).Encode(resp)
+	}
 }
