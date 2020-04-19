@@ -137,3 +137,17 @@ func DeleteUserData(firstname string) {
 
 	defer delete.Close()
 }
+
+// GetAccountData from database
+func GetAccountData(firstname string) *sql.Rows {
+
+	db := InitialDB()
+
+	find, err := db.Query(`Select * FROM Accounts WHERE firstname = ?`, firstname)
+
+	if err != nil {
+		panic(err.Error())
+	}
+
+	return find
+}

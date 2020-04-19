@@ -33,6 +33,7 @@ func GetUsers(w http.ResponseWriter, r *http.Request) {
 	for result.Next() {
 
 		var account Account
+
 		err := result.Scan(
 			&account.FirstName,
 			&account.LastName,
@@ -119,6 +120,51 @@ func DeleteUser(w http.ResponseWriter, r *http.Request) {
 		Status int `json:"status"`
 	}{
 		Status: http.StatusAccepted,
+	}
+
+	json.NewEncoder(w).Encode(resp)
+}
+
+// GetUser by firstname
+func GetUser(w http.ResponseWriter, r *http.Request) {
+
+	w.Header().Add("Content-Type", "application/json")
+
+	if r.Method != http.MethodGet {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+	}
+
+	var accounts []Account
+
+	param := mux.Vars(r)
+
+	result := database.GetAccountData(param["firstname"])
+
+	for result.Next() {
+
+		var account Account
+
+		err := result.Scan(
+			&account.FirstName,
+			&account.LastName,
+			&account.Age,
+			&account.Address,
+		)
+
+		if err != nil {
+			panic(err.Error())
+		}
+
+		accounts = append(accounts, account)
+
+	}
+
+	resp := struct {
+		Account []Account `json:"account"`
+		Status  int       `json:"status"`
+	}{
+		Account: accounts,
+		Status:  http.StatusAccepted,
 	}
 
 	json.NewEncoder(w).Encode(resp)

@@ -16,6 +16,7 @@ func init() {
 	router.HandleFunc("/user", controller.CreateUser).Methods("POST")
 	router.HandleFunc("/user/{firstname}/{lastname}", controller.UpdateUser).Methods("PUT")
 	router.HandleFunc("/user/{firstname}", controller.DeleteUser).Methods("DELETE")
+	router.HandleFunc("/user/{firstname}", controller.GetUser).Methods("GET")
 
 	http.ListenAndServe(":8080", router)
 }
