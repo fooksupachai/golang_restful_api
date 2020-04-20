@@ -18,5 +18,9 @@ func init() {
 	router.HandleFunc("/user/{firstname}", controller.DeleteUser).Methods("DELETE")
 	router.HandleFunc("/user/{firstname}", controller.GetUser).Methods("GET")
 
+	router.HandleFunc("/test", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(200)
+	}).Methods("GET")
+
 	http.ListenAndServe(":8080", router)
 }
