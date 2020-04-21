@@ -20,6 +20,11 @@ type Account struct {
 	Address   string `json:"address"`
 }
 
+type Client struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
+
 func getEnvVariable(key string) string {
 	// load .env file
 	err := godotenv.Load(".env")
@@ -150,4 +155,27 @@ func GetAccountData(firstname string) *sql.Rows {
 	}
 
 	return find
+}
+
+// CreateAccontData into database
+func CreateAccontData(body io.ReadCloser) {
+
+	var client Client
+
+	json.NewDecoder(body).Decode(&client)
+
+	db := InitialDB()
+
+	insert, err := db.Prepare(`INSERT INTO Client VALUES (?, ?)`)
+
+	_, err = insert.Exec(
+		client.Username,
+		client.Password,
+	)
+
+	if err != nil {
+		panic(err.Error())
+	}
+
+	defer insert.Close()
 }

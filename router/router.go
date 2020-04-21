@@ -12,6 +12,8 @@ func init() {
 
 	router := mux.NewRouter()
 
+	router.HandleFunc("/auth", controller.CreateAccount).Methods("POST")
+
 	router.HandleFunc("/users", controller.GetUsers).Methods("GET")
 	router.HandleFunc("/user", controller.CreateUser).Methods("POST")
 	router.HandleFunc("/user/{firstname}/{lastname}", controller.UpdateUser).Methods("PUT")
