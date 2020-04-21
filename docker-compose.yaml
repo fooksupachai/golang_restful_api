@@ -12,10 +12,10 @@ services:
     image: mysql:8.0.19
     container_name: mysql
     environment:
-      MYSQL_USER: root
-      MYSQL_ROOT_PASSWORD: fyhwek+1t(aE
-      MYSQL_PASSWORD: fyhwek+1t(aE
-      MYSQL_DATABASE: book_store
+      MYSQL_USER: ${DATABASE_USER_CONTAINER}
+      MYSQL_ROOT_PASSWORD: ${PASSWORD_DATABASE}
+      MYSQL_PASSWORD: ${PASSWORD_DATABASE}
+      MYSQL_DATABASE: ${DATABASE_NAME_CONTAINER}
     ports:
       - "3306:3306"
       - "33060:33060"
