@@ -3,6 +3,7 @@ package database
 import (
 	"database/sql"
 	"encoding/json"
+	"fmt"
 	"io"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -18,11 +19,6 @@ type Account struct {
 	LastName  string `json:"lastname"`
 	Age       int    `json:"age"`
 	Address   string `json:"address"`
-}
-
-type Client struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
 }
 
 func getEnvVariable(key string) string {
@@ -158,19 +154,16 @@ func GetAccountData(firstname string) *sql.Rows {
 }
 
 // CreateAccontData into database
-func CreateAccontData(body io.ReadCloser) {
-
-	var client Client
-
-	json.NewDecoder(body).Decode(&client)
+func CreateAccontData(Username string, Password string) {
 
 	db := InitialDB()
 
 	insert, err := db.Prepare(`INSERT INTO Client VALUES (?, ?)`)
 
+	fmt.Println(Username, Password)
 	_, err = insert.Exec(
-		client.Username,
-		client.Password,
+		Username,
+		Password,
 	)
 
 	if err != nil {

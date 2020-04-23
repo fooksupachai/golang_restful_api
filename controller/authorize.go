@@ -78,7 +78,12 @@ func CreateAccount(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	database.CreateAccontData(r.Body)
+	database.CreateAccontData(
+		client.Username,
+		client.Password,
+	)
+
+	fmt.Println(r.Body)
 
 	respAccount := struct {
 		Username string `json:"username"`
