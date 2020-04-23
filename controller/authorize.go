@@ -7,6 +7,7 @@ import (
 	"time"
 
 	database "github.com/fooksupachai/golang_restful_api/database"
+	u "github.com/fooksupachai/golang_restful_api/utils"
 
 	"github.com/dgrijalva/jwt-go"
 )
@@ -20,6 +21,7 @@ type Client struct {
 // Claims for jwt client
 type Claims struct {
 	Username string `json:"username"`
+	Type     string `json:"type"`
 	jwt.StandardClaims
 }
 
@@ -54,12 +56,13 @@ func CreateAccount(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var jwtKey = []byte("fyhwek+1t(aE")
+	var jwtKey = []byte(u.GetEnvVariable(`PASSWORD_DATABASE`))
 
-	expirationTime := time.Now().Add(1 * time.Minute)
+	expirationTime := time.Now().Add(5 * time.Minute)
 
 	claim := &Claims{
 		Username: client.Username,
+		Type:     "forGetUser",
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: expirationTime.Unix(),
 		},

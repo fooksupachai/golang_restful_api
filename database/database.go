@@ -7,10 +7,8 @@ import (
 	"io"
 
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/joho/godotenv"
 
-	"log"
-	"os"
+	u "github.com/fooksupachai/golang_restful_api/utils"
 )
 
 // Account for describe infomation
@@ -21,22 +19,11 @@ type Account struct {
 	Address   string `json:"address"`
 }
 
-func getEnvVariable(key string) string {
-	// load .env file
-	err := godotenv.Load(".env")
-
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
-
-	return os.Getenv(key)
-}
-
 // InitialDB for connected to databases
 func InitialDB() *sql.DB {
 
-	password := getEnvVariable(`PASSWORD_DATABASE`)
-	database := getEnvVariable(`DATABASE_NAME`)
+	password := u.GetEnvVariable(`PASSWORD_DATABASE`)
+	database := u.GetEnvVariable(`DATABASE_NAME`)
 
 	db, err := sql.Open(`mysql`, `root:`+password+database)
 
