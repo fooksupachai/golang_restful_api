@@ -99,3 +99,45 @@ func CreateAccount(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(respAccount)
 
 }
+
+// Auth for check account is exist
+func Auth(w http.ResponseWriter, r *http.Request) {
+
+	w.Header().Add("Content-Type", "application/json")
+
+	if r.Method != http.MethodPost {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+	}
+
+	result := database.CheckAccount(r.Body)
+
+	var clients []Client
+
+	for result.Next() {
+
+		var client Client
+
+		_ = result.Scan(
+			&client.Username,
+			&client.Password,
+		)
+
+		clients = append(clients, client)
+	}
+
+	if len(clients) != 1 {
+		w.WriteHeader(http.StatusForbidden)
+		res := u.Message("error")
+		res["data"] = "Client doesn't exist"
+		u.Response(w, res)
+		return
+	}
+
+	resp := struct {
+		Status int `json:"status"`
+	}{
+		Status: http.StatusAccepted,
+	}
+
+	json.NewEncoder(w).Encode(resp)
+}

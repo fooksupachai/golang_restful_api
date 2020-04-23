@@ -19,6 +19,12 @@ type Account struct {
 	Address   string `json:"address"`
 }
 
+// Client for user handler
+type Client struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
+
 // InitialDB for connected to databases
 func InitialDB() *sql.DB {
 
@@ -158,4 +164,24 @@ func CreateAccontData(Username string, Password string) {
 	}
 
 	defer insert.Close()
+}
+
+// CheckAccount to check account exist in database
+func CheckAccount(body io.ReadCloser) *sql.Rows {
+
+	var client Client
+
+	json.NewDecoder(body).Decode(&client)
+
+	db := InitialDB()
+
+	find, err := db.Query(`SELECT * FROM Client WHERE Username = ? AND Password = ?`, client.Username, client.Password)
+
+	fmt.Println(find)
+
+	if err != nil {
+		panic(err.Error())
+	}
+
+	return find
 }

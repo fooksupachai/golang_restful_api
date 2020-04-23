@@ -13,7 +13,8 @@ func init() {
 
 	router := mux.NewRouter()
 
-	router.HandleFunc("/auth", controller.CreateAccount).Methods("POST")
+	router.HandleFunc("/create_account", controller.CreateAccount).Methods("POST")
+	router.HandleFunc("/auth", controller.Auth).Methods("POST")
 
 	router.HandleFunc("/users", middleware.JWTMiddleware(controller.GetUsers)).Methods("GET")
 	router.HandleFunc("/user", controller.CreateUser).Methods("POST")
