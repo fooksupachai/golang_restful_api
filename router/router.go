@@ -15,6 +15,7 @@ func init() {
 
 	router.HandleFunc("/create_account", controller.CreateAccount).Methods("POST")
 	router.HandleFunc("/auth", controller.Auth).Methods("POST")
+	router.HandleFunc("/refresh_token", controller.RefreshToken).Methods("POST")
 
 	router.HandleFunc("/users", middleware.JWTMiddleware(controller.GetUsers)).Methods("GET")
 	router.HandleFunc("/user", controller.CreateUser).Methods("POST")
