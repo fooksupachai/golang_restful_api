@@ -20,10 +20,10 @@ func TestRecieveCompany(t *testing.T) {
 // TestRecieveClient for test amount of recieve
 func TestRecieveClient(t *testing.T) {
 
-	amount := m.CalcReceiveComp(10)
+	amountt := m.CalcReceiveComp(10)
 
 	if 20 != amount {
-		t.Error("Amount of recieve client should be 20 but have", amount)
+		t.Error("Amount of recieve client should be 20 but have", amountt)
 	}
 
 }
