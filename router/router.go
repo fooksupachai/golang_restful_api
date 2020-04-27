@@ -23,5 +23,7 @@ func init() {
 	router.HandleFunc("/user/{firstname}", controller.DeleteUser).Methods("DELETE")
 	router.HandleFunc("/user/{firstname}", controller.GetUser).Methods("GET")
 
+	router.HandleFunc("/info/convert", middleware.JWTMiddleware(controller.UserConvert)).Methods("GET")
+
 	http.ListenAndServe(":8080", router)
 }

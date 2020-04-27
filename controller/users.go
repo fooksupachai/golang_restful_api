@@ -2,9 +2,11 @@ package controller
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	database "github.com/fooksupachai/golang_restful_api/database"
+	u "github.com/fooksupachai/golang_restful_api/utils"
 	"github.com/gorilla/mux"
 )
 
@@ -183,4 +185,76 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 
 		json.NewEncoder(w).Encode(resp)
 	}
+}
+
+// UserConvert for provice modifer of user
+func UserConvert(w http.ResponseWriter, r *http.Request) {
+
+	w.Header().Add("Content-Type", "application/json")
+
+	if r.Method != http.MethodGet {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+	}
+
+	keyFirstname, ok := r.URL.Query()["firstname"]
+
+	if !ok || len(keyFirstname[0]) < 1 {
+
+		res := u.Message("error")
+		res["data"] = "Missing firstname"
+		u.Response(w, res)
+		return
+
+	}
+
+	firstName := keyFirstname[0]
+
+	fmt.Println(firstName)
+
+	result := database.GetAccountData(firstName)
+
+	var accounts []Account
+
+	for result.Next() {
+
+		var account Account
+
+		err := result.Scan(
+			&account.FirstName,
+			&account.LastName,
+			&account.Age,
+			&account.Address,
+		)
+
+		if err != nil {
+			panic(err.Error())
+		}
+
+		accounts = append(accounts, account)
+	}
+
+	if accounts != nil {
+
+		resp := struct {
+			Account []Account `json:"accounts"`
+			Status  int       `json:"status"`
+		}{
+			Account: accounts,
+			Status:  http.StatusAccepted,
+		}
+
+		json.NewEncoder(w).Encode(resp)
+	} else {
+
+		resp := struct {
+			Account string `json:"account"`
+			Status  int    `json:"status"`
+		}{
+			Account: "Not found any account",
+			Status:  http.StatusAccepted,
+		}
+
+		json.NewEncoder(w).Encode(resp)
+	}
+
 }
