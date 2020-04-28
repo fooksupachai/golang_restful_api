@@ -33,3 +33,11 @@ func GetEnvVariable(key string) string {
 
 	return os.Getenv(key)
 }
+
+// ValiateQueryURL from client
+func ValiateQueryURL(w http.ResponseWriter, param string) {
+	res := Message("error")
+	res["data"] = "Missing " + param + " parameter"
+	Response(w, res)
+	return
+}

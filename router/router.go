@@ -25,5 +25,7 @@ func init() {
 
 	router.HandleFunc("/info/convert", middleware.JWTMiddleware(controller.UserConvert)).Methods("GET")
 
+	router.HandleFunc("/risk_management", middleware.JWTMiddleware(controller.RiskManagement)).Methods("POST")
+
 	http.ListenAndServe(":8080", router)
 }
