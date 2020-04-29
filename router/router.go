@@ -13,19 +13,20 @@ func init() {
 
 	router := mux.NewRouter()
 
+	// Rest router
 	router.HandleFunc("/create_account", controller.CreateAccount).Methods("POST")
 	router.HandleFunc("/auth", controller.Auth).Methods("POST")
 	router.HandleFunc("/refresh_token", controller.RefreshToken).Methods("POST")
-
 	router.HandleFunc("/users", middleware.JWTMiddleware(controller.GetUsers)).Methods("GET")
 	router.HandleFunc("/user", controller.CreateUser).Methods("POST")
 	router.HandleFunc("/user/{firstname}/{lastname}", controller.UpdateUser).Methods("PUT")
 	router.HandleFunc("/user/{firstname}", controller.DeleteUser).Methods("DELETE")
 	router.HandleFunc("/user/{firstname}", controller.GetUser).Methods("GET")
-
 	router.HandleFunc("/info/convert", middleware.JWTMiddleware(controller.UserConvert)).Methods("GET")
-
 	router.HandleFunc("/risk_management", middleware.JWTMiddleware(controller.RiskManagement)).Methods("POST")
+
+	// Websocket router
+	router.HandleFunc("/livechat", controller.LiveChat).Methods("GET")
 
 	http.ListenAndServe(":8080", router)
 }

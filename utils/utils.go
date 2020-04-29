@@ -9,6 +9,9 @@ import (
 	"github.com/joho/godotenv"
 )
 
+// Stand alone writer interface to from web socket
+var write http.ResponseWriter
+
 // Message package a message
 func Message(message string) map[string]interface{} {
 	return map[string]interface{}{"message": message}
@@ -40,4 +43,19 @@ func ValiateQueryURL(w http.ResponseWriter, param string) {
 	res["data"] = "Missing " + param + " parameter"
 	Response(w, res)
 	return
+}
+
+// SocketMessage to handle web socket activity
+func SocketMessage(message error) {
+
+	resp := struct {
+		Message error `json:"message"`
+		Status  int   `json:"status"`
+	}{
+		Message: message,
+		Status:  http.StatusInternalServerError,
+	}
+
+	json.NewEncoder(write).Encode(resp)
+
 }
