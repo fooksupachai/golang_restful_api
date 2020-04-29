@@ -1,6 +1,10 @@
 package model
 
-import "fmt"
+import (
+	"encoding/json"
+	"fmt"
+	"io"
+)
 
 // PriceProvider to return computation price
 type PriceProvider interface {
@@ -26,6 +30,14 @@ type PriceGovernment struct {
 	person     float64
 	amount     float64
 	risk       float64
+}
+
+// Price to provide model structure
+type Price struct {
+	Department float64 `json:"department"`
+	Person     float64 `json:"person"`
+	Amount     float64 `json:"amount"`
+	Risk       float64 `json:"risk"`
 }
 
 // ComputePrice to calculate type manufactory
@@ -80,11 +92,39 @@ func RecieveCalcPriceGovernment(ch <-chan float64) float64 {
 }
 
 // ProvideCalcPrice to provide amount to calculate
-func ProvideCalcPrice() {
+func ProvideCalcPrice(body io.ReadCloser) (M float64, P float64, G float64) {
 
-	manufactory := PriceManufactory{16.44, 2.0058}
-	person := PricePerson{1, 1.44, 2.00448}
-	government := PriceGovernment{300, 22, 19754.44, 0.0000478}
+	var price Price
+
+	err := json.NewDecoder(body).Decode(&price)
+
+	if err != nil {
+		panic(err.Error())
+	}
+
+	fmt.Println("Body")
+	fmt.Println(
+		price.Department,
+		price.Person,
+		price.Amount,
+		price.Risk,
+	)
+
+	manufactory := PriceManufactory{
+		price.Amount,
+		price.Risk,
+	}
+	person := PricePerson{
+		price.Person,
+		price.Amount,
+		price.Risk,
+	}
+	government := PriceGovernment{
+		price.Department,
+		price.Person,
+		price.Amount,
+		price.Risk,
+	}
 
 	resultManufactory := make(chan float64)
 	resultPerson := make(chan float64)
@@ -98,8 +138,6 @@ func ProvideCalcPrice() {
 	finalResultP := RecieveCalcPricePerson(resultPerson)
 	finalResultG := RecieveCalcPriceGovernment(resultGovernment)
 
-	fmt.Println(finalResultM)
-	fmt.Println(finalResultP)
-	fmt.Println(finalResultG)
+	return finalResultM, finalResultP, finalResultG
 
 }

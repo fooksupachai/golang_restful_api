@@ -24,6 +24,7 @@ func init() {
 	router.HandleFunc("/user/{firstname}", controller.GetUser).Methods("GET")
 	router.HandleFunc("/info/convert", middleware.JWTMiddleware(controller.UserConvert)).Methods("GET")
 	router.HandleFunc("/risk_management", middleware.JWTMiddleware(controller.RiskManagement)).Methods("POST")
+	router.HandleFunc("/risk", middleware.JWTMiddleware(controller.GetRiskInfomation)).Methods("GET")
 
 	// Websocket router
 	router.HandleFunc("/livechat", controller.LiveChat).Methods("GET")

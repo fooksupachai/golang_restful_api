@@ -25,6 +25,13 @@ type Client struct {
 	Password string `json:"password"`
 }
 
+// Risk for risk handler
+type Risk struct {
+	Manufactory float64 `json:"manufactory"`
+	Person      float64 `json:"person"`
+	Government  float64 `json:"government"`
+}
+
 // InitialDB for connected to databases
 func InitialDB() *sql.DB {
 
@@ -184,4 +191,43 @@ func CheckAccount(body io.ReadCloser) *sql.Rows {
 	}
 
 	return find
+}
+
+// InsertRiskData to database
+func InsertRiskData(M float64, P float64, G float64) {
+
+	db := InitialDB()
+
+	insert, err := db.Prepare(`INSERT INTO Risk VALUES (?, ?, ?)`)
+
+	fmt.Println("Database do")
+	fmt.Println(M, P, G)
+
+	_, err = insert.Exec(
+		M,
+		P,
+		G,
+	)
+
+	if err != nil {
+		panic(err.Error())
+	}
+
+	defer insert.Close()
+
+}
+
+// GetAllRiskData from database
+func GetAllRiskData() *sql.Rows {
+
+	db := InitialDB()
+
+	result, err := db.Query(`SELECT * FROM book_store.Risk`)
+
+	if err != nil {
+		panic(err.Error())
+	}
+
+	return result
+
 }
